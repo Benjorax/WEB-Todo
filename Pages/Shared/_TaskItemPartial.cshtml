@@ -1,0 +1,29 @@
+@model TaskItem
+
+<div class="task-item @(Model.IsDone ? "done" : "")" id="task-@Model.Id">
+    <div class="task-content">
+        <span class="task-checkbox">@(Model.IsDone ? "✓" : "○")</span>
+        <span class="task-title">@Model.Title</span>
+    </div>
+        
+    <div class="task-actions">
+        <button type="button" 
+                class="btn-toggle"
+                hx-post="@Url.Page(null, "ToggleTaskHtmx")"
+                hx-vals='{"id": "@Model.Id"}'
+                hx-target="#task-@Model.Id"
+                hx-swap="outerHTML">
+            @(Model.IsDone ? "↩️ Отмена" : "✓ Выполнить")
+        </button>
+
+        <button type="button"
+                class="btn-delete delete-btn"
+                data-id="@Model.Id"
+                hx-post="@Url.Page(null, "RemoveTaskHtmx")"
+                hx-vals='{"id": "@Model.Id"}'
+                hx-target="#task-@Model.Id"
+                hx-swap="outerHTML swap:0.3s">
+            🗑️ Удалить
+        </button>
+    </div>
+</div>

@@ -1,0 +1,82 @@
+@page
+@model IndexModel
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo - Web</title>
+    <link rel="stylesheet" href="~/css/style.css">
+</head>
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+<body>
+<div class="container">
+    <h1>📝 ToDo</h1>
+
+    <form class="add-task-form"
+          hx-post="@Url.Page(null, "AddTaskHtmx")"
+          hx-target=".tasks-list"
+          hx-swap="beforeend"
+          hx-on::after-request="if(event.detail.xhr.status === 200) this.reset()">
+        @Html.AntiForgeryToken()
+        <input type="text" name="title" placeholder="Добавить новую задачу..." required maxlength="100">
+        <button type="submit" class="btn-add">➕ Добавить</button>
+    </form>
+
+    <div class="tasks-list">
+        @if (Model.Tasks.Count == 0)
+        {
+            <p class="empty">Нет задач. Добавь первую! 🎉</p>
+        }
+        else
+        {
+            @foreach (var task in Model.Tasks)
+            {
+                <partial name="Shared/_TaskItemPartial" model="task" />
+            }
+        }
+    </div>
+</div>
+
+<script>
+    // Конфигурация HTMX для передачи CSRF
+    htmx.config.withCredentials = true;
+    
+    document.addEventListener('htmx:configRequest', function(evt) {
+        var token = document.querySelector('input[name="__RequestVerificationToken"]');
+        if (token) {
+            evt.detail.headers['RequestVerificationToken'] = token.value;
+        }
+    });
+
+    // Обработка удаления задачи с подтверждением
+    document.addEventListener('htmx:confirm', function(evt) {
+        if (evt.detail.target.classList.contains('delete-btn')) {
+            evt.detail.issueRequest(confirm('Вы уверены?'));
+        }
+    });
+
+    // Управление пустым писком
+    let taskListObserver = new MutationObserver(function(mutations) {
+        const tasksList = document.querySelector('.tasks-list');
+        const hasItems = tasksList.querySelector('.task-item') !== null;
+        const hasEmptyMsg = tasksList.querySelector('.empty') !== null;
+
+        if (!hasItems && !hasEmptyMsg) {
+            const emptyMsg = document.createElement('p');
+            emptyMsg.className = 'empty';
+            emptyMsg.textContent = 'Нет задач. Добавь первую! 🎉';
+            tasksList.appendChild(emptyMsg);
+        } else if (hasItems && hasEmptyMsg) {
+            tasksList.querySelector('.empty').remove();
+        }
+    });
+
+    taskListObserver.observe(document.querySelector('.tasks-list'), {
+        childList: true,
+        subtree: false
+    });
+</script>
+</body>
+</html>

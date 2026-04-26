@@ -1,0 +1,28 @@
+@model TaskItem
+
+<div id="task-@Model.Id" class="task-item @(Model.IsDone ? "done" : "")">
+    <div class="task-content">
+        <span class="task-checkbox">@(Model.IsDone ? "✓" : "○")</span>
+        <span class="task-title">@Model.Title</span>
+    </div>
+
+    <div class="task-actions">
+        <form hx-post="/?handler=ToggleTask"
+              hx-target="#task-@Model.Id"
+              hx-swap="outerHTML"
+              class="task-action">
+            <input type="hidden" name="id" value="@Model.Id">
+            <button type="submit" class="btn-toggle">
+                @(Model.IsDone ? "↩️ Отмена" : "✓ Выполнить")
+            </button>
+        </form>
+
+        <form hx-post="/?handler=RemoveTask"
+              hx-target="#task-@Model.Id"
+              hx-swap="outerHTML"
+              class="task-action">
+            <input type="hidden" name="id" value="@Model.Id">
+            <button type="submit" class="btn-delete">🗑️ Удалить</button>
+        </form>
+    </div>
+</div>

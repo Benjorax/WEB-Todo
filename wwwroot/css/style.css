@@ -1,0 +1,288 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+    font-size: 28px;
+}
+
+/* Форма добавления задачи */
+.add-task-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.add-task-form input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.add-task-form input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-add {
+    padding: 12px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.btn-add:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-add:active {
+    transform: translateY(0);
+}
+
+/* Список задач */
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* HTMX анимации */
+.task-item.htmx-swapping {
+    opacity: 0;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.task-item.htmx-settling {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.task-item.htmx-added {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+}
+
+.task-item {
+    animation: taskAppear 0.3s ease-out forwards;
+    transition: background 0.3s, transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+}
+
+@keyframes taskAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes taskDisappear {
+    from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(30px) scale(0.96);
+    }
+}
+
+.empty {
+    text-align: center;
+    color: #999;
+    padding: 40px 20px;
+    font-size: 18px;
+}
+
+/* Элемент задачи */
+.task-item {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    transition: all 0.3s;
+    border-left: 4px solid #667eea;
+}
+
+.task-item:hover {
+    background: #f0f0f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.task-item.done {
+    background: #e8f5e9;
+    border-left-color: #4caf50;
+    opacity: 0.85;
+}
+
+.task-item.done .task-title {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.task-item.done .task-checkbox {
+    color: #4caf50;
+}
+/* Содержимое задачи */
+.task-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.task-checkbox {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ccc;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.task-title {
+    color: #333;
+    font-size: 16px;
+    word-break: break-word;
+}
+
+/* Действия над задачей */
+.task-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.task-action {
+    display: contents;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-toggle {
+    background: #4caf50;
+    color: white;
+}
+
+.btn-toggle:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.btn-toggle:active {
+    transform: translateY(0);
+}
+
+.btn-delete {
+    background: #f44336;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #da190b;
+    transform: translateY(-2px);
+}
+
+.btn-delete:active {
+    transform: translateY(0);
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .add-task-form {
+        flex-direction: column;
+    }
+
+    .add-task-form input {
+        width: 100%;
+    }
+
+    .btn-add {
+        width: 100%;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task-actions {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .task-action button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 400px) {
+    .task-actions {
+        flex-wrap: wrap;
+    }
+
+    button {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+}
